@@ -9,28 +9,27 @@ namespace Labb1_Avancerad.Net
     public class LådaCollection : ICollection<Låda>
     {
 
+     
+        // En enumerator som kan användas för att iterera igenom din collection
         public IEnumerator<Låda> GetEnumerator()
         {
-            return innerCol.GetEnumerator();
+            return new LådaEnumerator(this);
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new LådaEnumerator(this);
         }
 
-        
+
+        // innercol är din collection för att lagra object
         private List<Låda> innerCol;
-
-        public int Count => throw new NotImplementedException();
-
-        public bool IsReadOnly => throw new NotImplementedException();
-
         public LådaCollection()
         {
             innerCol = new List<Låda>();
         }
 
-        
+
+        //Lägger till ett index till din collection
         public Låda this[int index]
         {
             get { return (Låda)innerCol[index]; }
@@ -38,14 +37,15 @@ namespace Labb1_Avancerad.Net
         }
 
 
-        public bool Contains(Låda item)
+        // Avgör om ett object är i din collection genom att använda LådaSameDimensions equality comparer.
+        public bool Contains(Låda låda)
         {
             bool found = false;
 
-            foreach (Låda bx in innerCol)
+            foreach (Låda L in innerCol)
             {
-
-                if (bx.Equals(item))
+                
+                if (L.Equals(låda))
                 {
                     found = true;
                 }
@@ -53,14 +53,14 @@ namespace Labb1_Avancerad.Net
             return found;
         }
 
-
-        public bool Contains(Låda item, EqualityComparer<Låda> comp)
+        // Avgör om ett object är i din collection genom att använda en specifik equality comparer.
+        public bool Contains(Låda låda, EqualityComparer<Låda> comp)
         {
             bool found = false;
 
-            foreach (Låda bx in innerCol)
+            foreach (Låda L in innerCol)
             {
-                if (comp.Equals(bx, item))
+                if (comp.Equals(L, låda))
                 {
                     found = true;
                 }
@@ -69,30 +69,61 @@ namespace Labb1_Avancerad.Net
             return found;
         }
 
-        public void Add(Låda item)
+
+        //Lägger till ett object sålänge som den inte redan finns i din collection genom att kalla på Contains metoden.
+        public void Add(Låda låda)
         {
-            if (Contains(item))
+            if (!Contains(låda))
             {
-                Console.WriteLine("Box with the same dimensions already exists in the list");
+                innerCol.Add(låda);
+                Console.WriteLine("Lade till lådan i listan");
             }
             else
             {
-                innerCol.Add(item);
-                Console.WriteLine("Added item to the list");
+                Console.WriteLine($"En låda med dimensionerna höjd:{låda.höjd} längd:{låda.längd} bredd:{låda.bredd} finns redan i listan");
             }
-            
+
         }
 
+        // Tar bort alla elementen från din collection 
         public void Clear()
         {
-            throw new NotImplementedException();
+            innerCol.Clear();
+        }
+        public int Count 
+        { 
+            get 
+            { 
+                return innerCol.Count; 
+            } 
         }
 
+        // Kopierar alla elementen från collection till en array av låda vid ett specifikt index
         public void CopyTo(Låda[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            if (array == null)
+            {
+                throw new ArgumentException("The array cannot be null.");
+
+            }
+            if (arrayIndex < 0)
+            {
+                throw new ArgumentException("The starting array index cannot be negative.");
+            }
+            if (Count > array.Length - arrayIndex +1)
+            {
+                throw new ArgumentException("The destination array has fewer elements than the collection.");
+            }
+
+            for (int i = 0; i < innerCol.Count; i++)
+            {
+                array[i + arrayIndex] = innerCol[i];
+            }
         }
 
+
+
+        // Itererar igenom din collection för att hitta lådan som skall tas bort
         public bool Remove(Låda item)
         {
             bool result = false;
@@ -100,11 +131,13 @@ namespace Labb1_Avancerad.Net
             for (int i = 0; i < innerCol.Count; i++)
             {
 
-                Låda låda = (Låda)innerCol[i];
+                Låda curLåda = (Låda)innerCol[i];
 
-                if (new LådaSameDimensions().Equals(låda, item))
+                if (new LådaSameDimensions().Equals(curLåda, item))
                 {
                     innerCol.RemoveAt(i);
+
+                    Console.WriteLine($"Objektet med dimensionerna  höjd:{item.höjd}  längd:{ item.längd}  bredd:{ item.bredd} { item.GetHashCode()} togs bort!");
                     result = true;
                     break;
                 }
@@ -112,5 +145,12 @@ namespace Labb1_Avancerad.Net
             return result;
         }
 
+        public bool IsReadOnly 
+        { 
+            get 
+            { 
+                return false; 
+            } 
+        }
     }
 }

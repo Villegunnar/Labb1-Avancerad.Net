@@ -7,24 +7,28 @@ namespace Labb1_Avancerad.Net
 {
     public class Låda : IEquatable<Låda>
     {
-        public override string ToString()
-        {
+        public int höjd { get; set; }
+        public int längd { get; set; }
+        public int bredd { get; set; }
 
-            return "höjd: " + höjd + " " + " Bredd: " + bredd + " Längd: " + längd;
-        }
         public Låda(int h, int l, int b)
         {
             this.höjd = h;
             this.längd = l;
             this.bredd = b;
         }
-        public int höjd { get; set; }
-        public int längd { get; set; }
-        public int bredd { get; set; }
 
+
+
+        //Jämför dimensionerna och volymen mellan 2 object.
+        //Returnerar true om den får en match annars false.
         public bool Equals(Låda other)
         {
             if (new LådaSameDimensions().Equals(this, other))
+            {
+                return true;
+            }
+            else if (new LådaSameVol().Equals(this, other))
             {
                 return true;
             }
@@ -43,5 +47,6 @@ namespace Labb1_Avancerad.Net
         {
             return base.GetHashCode();
         }
+
     }
 }

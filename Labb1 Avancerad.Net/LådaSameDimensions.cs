@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-
+using System;
 namespace Labb1_Avancerad.Net
 {
     public class LådaSameDimensions : EqualityComparer<Låda>
     {
 
-        public override bool Equals([AllowNull] Låda x, [AllowNull] Låda y)
+        // Definierar två rutor som lika om de har samma dimensioner
+        public override bool Equals(Låda lådaEtt, Låda lådaTvå)
         {
-            if (x.höjd == y.höjd && x.längd == y.längd
-                    && x.bredd == y.bredd)
+            if (lådaEtt.höjd == lådaTvå.höjd && lådaEtt.längd == lådaTvå.längd
+                    && lådaEtt.bredd == lådaTvå.bredd)
             {
                 return true;
             }
@@ -18,11 +19,11 @@ namespace Labb1_Avancerad.Net
                 return false;
             }
         }
-
-        public override int GetHashCode([DisallowNull] Låda obj)
+        public override int GetHashCode([DisallowNull] Låda låda)
         {
-            int hCode = obj.höjd ^ obj.längd ^ obj.bredd;
-            return obj.GetHashCode();
+            int hCode = låda.höjd ^ låda.längd ^ låda.bredd;
+            Console.WriteLine($"Hashcode: {hCode.GetHashCode()}");
+            return hCode.GetHashCode();
         }
     }
 }
